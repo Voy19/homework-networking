@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  db:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./db/:/root/db/
+  server:
+    build: 
+      context: ./
+      dockerfile: ./.Dockerfile
+      args:
+        - NODE_ENV=production
+    env_file: .env
+    restart: always
+    container_name: server
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+    command: 'pm2-runtime ecosystem.config.js --env production'
